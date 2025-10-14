@@ -20,14 +20,14 @@
 
 ```
 npm install
-npm run start
+npm run dev
 ```
 
 или
 
 ```
 yarn
-yarn start
+yarn dev
 ```
 ## Сборка
 
@@ -98,3 +98,98 @@ Presenter - презентер содержит основную логику п
 `emit<T extends object>(event: string, data?: T): void` - инициализация события. При вызове события в метод передается название события и объект с данными, который будет использован как аргумент для вызова обработчика.  
 `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
 
+#### Данные
+### Интерфейсы данных
+IProduct - описывает структуру товара:
+id: string - уникальный идентификатор
+title: string - название товара
+description: string - описание товара
+image: string - URL изображения
+category: string - категория товара
+price: number | null - цена товара (может быть null)
+IBuyer - описывает данные покупателя:
+payment: TPayment - способ оплаты ('card' или 'cash')
+email: string - email покупателя
+phone: string - телефон покупателя
+address: string - адрес доставки
+IOrder - описывает данные заказа:
+payment: TPayment - способ оплаты
+email: string - email покупателя
+phone: string - телефон покупателя
+address: string - адрес доставки
+total: number - общая стоимость заказа
+items: string[] - массив ID товаров
+IValidationErrors - описывает ошибки валидации:
+payment?: string - ошибка способа оплаты
+email?: string - ошибка email
+phone?: string - ошибка телефона
+address?: string - ошибка адреса
+
+### Модели данных
+## Класс ProductList
+Назначение: Хранит каталог товаров и выбранный товар для детального просмотра.
+
+Конструктор:
+typescript
+constructor()
+
+Поля:
+_items: IProduct[] - массив всех товаров
+_selectedItem: IProduct | null - выбранный для просмотра товар
+
+Методы:
+setItems(items: IProduct[]): void - сохраняет массив товаров
+getItems(): IProduct[] - возвращает массив всех товаров
+getItem(id: string): IProduct | undefined - возвращает товар по ID
+setSelectedItem(item: IProduct): void - сохраняет выбранный товар
+getSelectedItem(): IProduct | null - возвращает выбранный товар
+
+## Класс Cart
+Назначение: Управляет товарами в корзине покупок.
+
+Конструктор:
+typescript
+constructor()
+
+Поля:
+_items: IProduct[] - массив товаров в корзине
+
+Методы:
+getItems(): IProduct[] - возвращает товары в корзине
+addItem(item: IProduct): void - добавляет товар в корзину
+removeItem(id: string): void - удаляет товар из корзины по ID
+clear(): void - очищает корзину
+getTotal(): number - возвращает общую стоимость товаров
+getCount(): number - возвращает количество товаров в корзине
+contains(id: string): boolean - проверяет наличие товара в корзине
+
+## Класс Buyer
+Назначение: Хранит и валидирует данные покупателя.
+
+Конструктор:
+typescript
+constructor()
+
+Поля:
+_data: Partial<IBuyer> - данные покупателя
+
+Методы:
+setData(data: Partial<IBuyer>): void - сохраняет данные покупателя
+getData(): Partial<IBuyer> - возвращает все данные покупателя
+clear(): void - очищает данные покупателя
+validate(): IValidationErrors - валидирует данные и возвращает ошибки
+
+### Слой коммуникации
+Класс AppApi
+Назначение: Обеспечивает взаимодействие с API сервера.
+
+Конструктор:
+typescript
+constructor(baseApi: IApi)
+
+Поля:
+_baseApi: IApi - экземпляр базового API класса
+
+Методы:
+getProductList(): Promise<IProduct[]> - получает список товаров с сервера
+createOrder(order: IOrder): Promise<IOrderResponse> - отправляет заказ на сервер
