@@ -1,11 +1,15 @@
 import { IProduct } from '../../types';
+import { IEvents } from '../base/Events'; // Исправленный путь
 
 export class ProductList {
     private _items: IProduct[] = [];
     private _selectedItem: IProduct | null = null;
 
+    constructor(protected events: IEvents) {}
+
     setItems(items: IProduct[]): void {
         this._items = items;
+        this.events.emit('catalog:changed');
     }
 
     getItems(): IProduct[] {
@@ -18,6 +22,7 @@ export class ProductList {
 
     setSelectedItem(item: IProduct): void {
         this._selectedItem = item;
+        this.events.emit('product:selected', item);
     }
 
     getSelectedItem(): IProduct | null {

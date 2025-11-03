@@ -1,10 +1,14 @@
 import { IBuyer, IValidationErrors } from '../../types';
+import { IEvents } from '../base/Events';
 
 export class Buyer {
     private _data: Partial<IBuyer> = {};
 
+    constructor(protected events: IEvents) {}
+
     setData(data: Partial<IBuyer>): void {
         this._data = { ...this._data, ...data };
+        this.events.emit('buyer:changed', this._data);
     }
 
     getData(): Partial<IBuyer> {
@@ -13,6 +17,7 @@ export class Buyer {
 
     clear(): void {
         this._data = {};
+        this.events.emit('buyer:changed', this._data);
     }
 
     validate(): IValidationErrors {
