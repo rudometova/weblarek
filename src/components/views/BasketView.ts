@@ -28,25 +28,19 @@ export class BasketView extends Component<IBasketView> {
         }
     }
 
-    // Сеттер для списка товаров
+    // Сеттер для списка товаров - ОПТИМИЗИРОВАННЫЙ
     set items(value: HTMLElement[]) {
-        // Очищаем текущий список
-        this._list.innerHTML = '';
-        
-        // Добавляем новые товары
         if (value.length) {
-            value.forEach(item => {
-                this._list.appendChild(item);
-            });
+            this._list.replaceChildren(...value);  // ✅ Одна операция
         } else {
             // Если корзина пуста, показываем сообщение
             this._list.innerHTML = '<p class="basket__empty">Корзина пуста</p>';
         }
     }
 
-    // Сеттер для общей стоимости
+    // Сеттер для общей стоимости - УПРОЩЕННЫЙ
     set total(value: number) {
-        this.setText(this._total, `${value} синапсов`);
+        this._total.textContent = `${value} синапсов`;  // ✅ Прямое присваивание
     }
 
     // Сеттер для блокировки кнопки оформления
@@ -54,10 +48,5 @@ export class BasketView extends Component<IBasketView> {
         this._button.disabled = value.length === 0;
     }
 
-    // Вспомогательный метод для установки текста
-    protected setText(element: HTMLElement, value: string) {
-        if (element) {
-            element.textContent = value;
-        }
-    }
+    // ✅ УБРАТЬ метод setText - он не нужен
 }

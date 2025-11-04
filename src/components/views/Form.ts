@@ -1,5 +1,6 @@
 import { Component } from '../base/Component';
 import { ensureElement } from '../../utils/utils';
+import { IEvents } from '../base/Events';
 
 // Базовый интерфейс для всех форм
 interface IFormData {
@@ -9,37 +10,30 @@ interface IFormData {
 
 // Базовый класс для всех форм
 export class Form<T extends IFormData> extends Component<T> {
-    protected _submit: HTMLButtonElement | null;
-    protected _errors: HTMLElement | null;
+    protected _submit: HTMLButtonElement;
+    protected _errors: HTMLElement;
 
-    constructor(container: HTMLFormElement) {
+    constructor(container: HTMLFormElement, protected events: IEvents) {
         super(container);
 
-        // Находим общие элементы форм (может быть null)
-        try {
-            this._submit = ensureElement<HTMLButtonElement>('button[type="submit"]', container);
-        } catch {
-            this._submit = null;
-        }
+        // Находим общие элементы форм (обязательные)
+        this._submit = ensureElement<HTMLButtonElement>('button[type="submit"]', container);
+        this._errors = ensureElement<HTMLElement>('.form__errors', container);
 
-        try {
-            this._errors = ensureElement<HTMLElement>('.form__errors', container);
-        } catch {
-            this._errors = null;
-        }
+        // Обработка сабмита формы - УЛУЧШЕННАЯ ВЕРСИЯ
+        this.container.addEventListener('submit', (e: Event) => {
+            e.preventDefault();
+            this.events.emit(`${this.container.getAttribute('name')}:submit`);
+        });
     }
 
     // Сеттер для состояния валидности формы
     set valid(value: boolean) {
-        if (this._submit) {
-            this._submit.disabled = !value;
-        }
+        this._submit.disabled = !value;
     }
 
     // Сеттер для отображения ошибок
     set errors(value: string[]) {
-        if (this._errors) {
-            this._errors.textContent = value.join(', ');
-        }
+        this._errors.textContent = value.join(', ');
     }
 }

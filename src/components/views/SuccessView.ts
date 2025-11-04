@@ -26,13 +26,7 @@ export class SuccessView extends Component<ISuccessView> {
 
     // Сеттер для общей стоимости
     set total(value: number) {
-        this.setText(this._total, `Списано ${value} синапсов`);
+        this._total.textContent = `Списано ${value} синапсов`;
     }
 
-    // Вспомогательный метод для установки текста
-    protected setText(element: HTMLElement, value: string) {
-        if (element) {
-            element.textContent = value;
-        }
-    }
 }

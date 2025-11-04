@@ -2,10 +2,11 @@ import { Card } from './Card';
 import { ensureElement } from '../../../utils/utils';
 import { IProduct } from '../../../types';
 
-// Интерфейс данных для CardPreview
+// Интерфейс данных для CardPreview - ДОБАВЛЕНО available
 interface ICardPreview extends IProduct {
     description: string;
     inBasket?: boolean;
+    available?: boolean; 
 }
 
 // Класс карточки товара в модальном окне
@@ -44,18 +45,16 @@ export class CardPreview extends Card<ICardPreview> {
         }
     }
 
-    // Переопределяем сеттер цены для блокировки кнопки
-    set price(value: number | null) {
-        super.price = value;
-        
-        // Если цена null, блокируем кнопку и меняем текст
-        if (value === null) {
+    // Сеттер для доступности товара - НОВЫЙ СЕТТЕР
+    set available(value: boolean) {
+        if (!value) {
             this._button.setAttribute('disabled', 'true');
             this._button.textContent = 'Недоступно';
-            this._button.classList.remove('card__button_remove'); // Убираем стиль удаления
+            this._button.classList.remove('card__button_remove');
         } else {
             this._button.removeAttribute('disabled');
             // Текст установится через сеттер inBasket
         }
     }
+
 }

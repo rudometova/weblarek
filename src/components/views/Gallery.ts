@@ -17,14 +17,6 @@ export class Gallery extends Component<IGallery> {
 
     // Сеттер для обновления каталога
     set catalog(items: HTMLElement[]) {
-        // Очищаем текущий каталог
-        this._catalog.innerHTML = '';
-        
-        // Добавляем новые карточки
-        if (items.length) {
-            items.forEach(item => {
-                this._catalog.appendChild(item);
-            });
-        }
+        this._catalog.replaceChildren(...items);
     }
 }

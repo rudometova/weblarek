@@ -27,24 +27,18 @@ export class Modal extends Component<IModal> {
 
     // Сеттер для установки контента
     set content(value: HTMLElement | null) {
-        if (value) {
-            this._content.replaceChildren(value);
-        } else {
-            this._content.innerHTML = '';
-        }
+        this._content.replaceChildren(value ?? '');
     }
 
     // Открытие модального окна
     open(): void {
         this.container.classList.add('modal_active');
-        this.events.emit('modal:open');
     }
 
     // Закрытие модального окна
     close(): void {
         this.container.classList.remove('modal_active');
         this.content = null;
-        this.events.emit('modal:close');
     }
 
     // Рендер с дополнительной логикой
