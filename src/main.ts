@@ -146,7 +146,6 @@ events.on('order:change', (data: { field: string; value: any }) => {
 });
 
 // Обработчик изменений данных покупателя
-// Обработчик изменений данных покупателя - С ОТЛАДКОЙ
 events.on('buyer:changed', () => {
     const buyerData = buyerModel.getData();
     const validation = buyerModel.validate();
@@ -183,7 +182,7 @@ events.on('order:submit', () => {
     modal.render({ content: contactsForm.render() });
 });
 
-// Обработчик изменений в форме контактов - С ОТЛАДКОЙ
+// Обработчик изменений в форме контактов
 events.on('contacts:change', (data: { field: string; value: any }) => {
     buyerModel.setData({ [data.field]: data.value });
 });
